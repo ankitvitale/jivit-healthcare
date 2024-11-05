@@ -71,4 +71,12 @@ public class CleamRequestService {
 
     public List<CleamRequest> getAllCleamRequest() {
         return  cleamRequestDao.findAll();    }
+
+    public CleamRequest getCleamRequestById(Long id) {
+        return  cleamRequestDao.findById(id).orElse(null);   }
+
+    public CleamRequest updateCleamRequest(CleamRequest existingCleamRequest) {
+        return  cleamRequestDao.save(existingCleamRequest);
+    }
 }
+

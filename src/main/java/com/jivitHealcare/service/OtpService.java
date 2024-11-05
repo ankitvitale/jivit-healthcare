@@ -262,21 +262,27 @@ public class OtpService {
         System.out.println("Email sent successfully to " + email);
     }
 
-//        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-//        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-//
-//        helper.setFrom("your-email@gmail.com");
-//        helper.setTo(email);
-//        helper.setSubject(subject);
-//        helper.setText(body);
-//
-//        // Attach the PDF
-//        String attachmentPath = null;
-//        FileSystemResource file = new FileSystemResource(new File(attachmentPath));
-//        helper.addAttachment(file.getFilename(), file);
-//
-//        javaMailSender.send(mimeMessage);
+    void sendHospitalAddedEmail(Hospital hospital) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(hospital.getEmail());
+        message.setSubject("Hospital Register Successfully");
+
+        String emailBody = "Dear " + hospital.getHospitalName() + ",\n\n" +
+                "Your hospital has been successfully empanell in Jivit Healthcare & Medical Services.Pvt.Ltd\n" +
+                "Your JivitHealthCare login ID is: " + hospital.getEmail() + "\n" +
+                "And your password is the OTP sent to your email: " + hospital.getEmail() + "\n\n" +
+                "Thank you once again for choosing Jivit Healthcare! We are here for your health and well-being.\n" +
+                "If you have any questions, feel free to reach out!\n\n" +
+                "\n\nBest Regards,\nThe Jivit Healthcare Team";
+
+        message.setText(emailBody);
+
+        // Send the email
+        javaMailSender.send(message);
     }
+
+
+}
 
 
 

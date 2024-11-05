@@ -46,6 +46,13 @@ public class CleamRequest {
     private String jivatHealthCard;
     private String salaryACCheque;
     private String promissoryNote;
+
+    private String cutumnbpramanpatra;
+    private String parishitdocument;
+
+    private String finalbill;
+    private String dischargecard;
+    private String massage;
     private  String status= String.valueOf(CleamRequestStatus.Pending);
 
     @ManyToOne
@@ -304,9 +311,50 @@ public class CleamRequest {
         return status;
     }
 
+    public String getCutumnbpramanpatra() {
+        return cutumnbpramanpatra;
+    }
+
+    public void setCutumnbpramanpatra(String cutumnbpramanpatra) {
+        this.cutumnbpramanpatra = cutumnbpramanpatra;
+    }
+
+    public String getParishitdocument() {
+        return parishitdocument;
+    }
+
+    public void setParishitdocument(String parishitdocument) {
+        this.parishitdocument = parishitdocument;
+    }
+
+    public String getFinalbill() {
+        return finalbill;
+    }
+
+    public void setFinalbill(String finalbill) {
+        this.finalbill = finalbill;
+    }
+
+    public String getDischargecard() {
+        return dischargecard;
+    }
+
+    public void setDischargecard(String dischargecard) {
+        this.dischargecard = dischargecard;
+    }
+
+    public String getMassage() {
+        return massage;
+    }
+
+    public void setMassage(String massage) {
+        this.massage = massage;
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
+
 
     public Hospital getHospital() {
         return hospital;

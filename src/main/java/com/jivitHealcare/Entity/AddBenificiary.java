@@ -50,6 +50,9 @@ public class AddBenificiary {
     @Column(name = "designation", nullable = false)
     private String designation;
 
+    @Column(name = "gender", nullable = false)
+    private String gender;
+
 
 
     @ElementCollection
@@ -160,6 +163,14 @@ public class AddBenificiary {
 
     public void setCardNo(String cardNo) {
         this.cardNo = cardNo;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public List<BenificiaryCardDependents> getBenificiaryCardDependents() {

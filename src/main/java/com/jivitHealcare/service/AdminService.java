@@ -35,7 +35,11 @@ public class AdminService {
     @Autowired
     private BenificiaeyDao benificiaeyDao;
     @Autowired
-    BenificiaryCardDependentsDao benificiaryCardDependentsDao;
+   private BenificiaryCardDependentsDao benificiaryCardDependentsDao;
+
+    @Autowired
+
+    private OtpService otpService;
 
     public void initRoleAndUser() {
 
@@ -81,7 +85,11 @@ public class AdminService {
         roles.add(adminRole);
         hospital.setRole(roles); // Set the fetched role
 
-        return  hospitalDao.save(hospital);
+        Hospital savedHospital =  hospitalDao.save(hospital);
+
+        otpService.sendHospitalAddedEmail(hospital);
+
+        return savedHospital;
     }
 
     // Method to retrieve a hospital by ID

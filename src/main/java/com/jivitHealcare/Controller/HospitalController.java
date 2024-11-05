@@ -123,9 +123,6 @@ public class HospitalController {
     }
 
 
-
-
-
     @PostMapping("/createCleamRequest")
     @PreAuthorize("hasRole('Hospital')")
     public ResponseEntity<CleamRequest> createCleamRequest(
@@ -158,8 +155,12 @@ public class HospitalController {
             @RequestParam("aadharCard") MultipartFile aadharCardFile,
             @RequestParam("jivatHealthCard") MultipartFile jivatHealthCardFile,
             @RequestParam("salaryACCheque") MultipartFile salaryACChequeFile,
-            @RequestParam("promissoryNote") MultipartFile promissoryNoteFile)
-        //    @RequestParam Long hospitalId)
+            @RequestParam("promissoryNote") MultipartFile promissoryNoteFile,
+            @RequestParam("cutumnbpramanpatra") MultipartFile cutumnbpramanpatraFile,
+            @RequestParam("parishitdocument") MultipartFile parishitdocumentFile)
+
+
+    //    @RequestParam Long hospitalId)
     {
 
         try {
@@ -168,12 +169,16 @@ public class HospitalController {
             String jivatHealthCard = uploadFileToSpace(jivatHealthCardFile);
             String salaryACCheque = uploadFileToSpace(salaryACChequeFile);
             String promissoryNote = uploadFileToSpace(promissoryNoteFile);
+            String cutumnbpramanpatra =uploadFileToSpace(cutumnbpramanpatraFile);
+            String parishitdocument =uploadFileToSpace(parishitdocumentFile);
 
             String email = JwtAuthenticationFilter.CURRENT_USER;
             Hospital hospital1 = hospitalDao.findByEmail(email);
             if (hospital1 == null) {
                 throw new RuntimeException("User not found");
             }
+
+//int totalExpenseHospitalization=(expectedLengthOfStay*perDayRoomRent)+expectedCostInvestigation+medicinesConsumablesCost+doctorFeeSurgeonAss+surgeonAnesthetistVisitCharges;
 
             // Create a new CleamRequest object and set the parameters
             CleamRequest cleamRequest = new CleamRequest();
@@ -210,7 +215,8 @@ public class HospitalController {
             cleamRequest.setJivatHealthCard(jivatHealthCard);
             cleamRequest.setSalaryACCheque(salaryACCheque);
             cleamRequest.setPromissoryNote(promissoryNote);
-
+            cleamRequest.setParishitdocument(parishitdocument);
+            cleamRequest.setCutumnbpramanpatra(cutumnbpramanpatra);
 
 
             // Save the CleamRequest
@@ -255,19 +261,73 @@ public class HospitalController {
     }
 
 
+    @PutMapping("/updateCleamRequest/{id}")
+    @PreAuthorize("hasRole('Hospital')")
+    public ResponseEntity<CleamRequest> updateCleamRequest(
+            @PathVariable Long id,
+            @RequestParam(required = false) String massage, // Changed to RequestParam
+            @RequestParam("finalbill") MultipartFile finalbillFile,
+            @RequestParam("dischargecard") MultipartFile dischargecardFile) {
 
-//    @GetMapping("/getAllCleamRequest")
-//    @PreAuthorize("hasAnyRole('Admin')")
-//    public ResponseEntity<List<CleamRequest>> getAllCleamRequest(){
-//        List <CleamRequest> savedRequest = cleamRequestService.getAllCleamRequest();
-//        return ResponseEntity.ok(savedRequest);
-//    }
+        try {
+            // Find the existing CleamRequest by ID
+            CleamRequest existingCleamRequest = cleamRequestService.getCleamRequestById(id);
+            if (existingCleamRequest == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            // Get the current user (Hospital) from the JWT token
+            String email = JwtAuthenticationFilter.CURRENT_USER;
+            Hospital hospital1 = hospitalDao.findByEmail(email);
+            if (hospital1 == null) {
+                throw new RuntimeException("User not found");
+            }
+
+            // Upload the new files if provided
+            if (!finalbillFile.isEmpty()) {
+                String finalbill = uploadFileToSpace(finalbillFile);
+                existingCleamRequest.setFinalbill(finalbill);
+            }
+            if (!dischargecardFile.isEmpty()) {
+                String dischargecard = uploadFileToSpace(dischargecardFile);
+                existingCleamRequest.setDischargecard(dischargecard);
+            }
+
+            // Update the message if provided
+            if (massage != null && !massage.isEmpty()) {
+                existingCleamRequest.setMassage(massage);
+            }
+
+            existingCleamRequest.setHospital(hospital1);  // Ensure hospital is updated
+
+            // Save the updated CleamRequest
+            CleamRequest updatedCleamRequest = cleamRequestService.updateCleamRequest(existingCleamRequest);
+
+            // Return the updated CleamRequest as response
+            return new ResponseEntity<>(updatedCleamRequest, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/hospitalCleamRequests")
     @PreAuthorize("hasAnyRole('Hospital')")
     public ResponseEntity<List<CleamRequest>> getAllCleamRequestByHospital() {
         List<CleamRequest> cleamRequests = cleamRequestService.getAllCleamRequestByHospital();
         return ResponseEntity.ok(cleamRequests);
+    }
+    // New API to get CleamRequest by id
+    @GetMapping("/cleamRequest/{id}")
+    @PreAuthorize("hasAnyRole('Hospital')")
+    public ResponseEntity<CleamRequest> getCleamRequestById(@PathVariable Long id) {
+        CleamRequest cleamRequest = cleamRequestService.getCleamRequestById(id);
+
+        if (cleamRequest != null) {
+            return ResponseEntity.ok(cleamRequest);
+        } else {
+            return ResponseEntity.notFound().build(); // Return 404 if CleamRequest not found
+        }
     }
     @GetMapping("/adminCleamRequests")
     @PreAuthorize("hasRole('Admin')")

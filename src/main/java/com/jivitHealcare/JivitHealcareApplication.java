@@ -8,7 +8,6 @@ public class JivitHealcareApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(JivitHealcareApplication.class, args);
-
 		System.out.println("welcome to jivitHealth");
 	}
 
