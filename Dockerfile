@@ -5,7 +5,7 @@ FROM maven:3.9.6-amazoncorretto-17 AS build
 WORKDIR /app
 
 # (Optional) Install curl for debugging network connectivity
-RUN apt-get update && apt-get install -y curl
+RUN apk update && apk add --no-cache curl
 
 # Ensure Maven is available (optional for debugging)
 RUN mvn -v
