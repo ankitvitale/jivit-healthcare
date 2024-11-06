@@ -1,13 +1,13 @@
 # Stage 1: Build the application using Maven
-FROM  maven:3.9.6-amazoncorretto-17-a12023 AST build
+FROM maven:3.9.6-amazoncorretto-17 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install curl (optional, useful for debugging network connectivity)
+# (Optional) Install curl for debugging network connectivity
 RUN apt-get update && apt-get install -y curl
 
-# Ensure Maven is available
+# Ensure Maven is available (optional for debugging)
 RUN mvn -v
 
 # Copy the pom.xml and download dependencies
@@ -23,9 +23,9 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Create the final image
-FROM  openjdk:24-slim-bullseye
+FROM openjdk:17-slim-bullseye
 
-# Set working directory for the final image
+# Set the working directory inside the container
 WORKDIR /app
 
 # Copy the built JAR file from the previous stage
