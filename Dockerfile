@@ -1,5 +1,5 @@
 # Stage 1: Build the application using Maven
-FROM  maven: 3.9.6-amazoncorretto-17-a12023 AST build
+FROM  maven:3.9.6-amazoncorretto-17-a12023 AST build
 
 # Set the working directory inside the container
 WORKDIR /app
