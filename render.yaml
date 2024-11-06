@@ -37,7 +37,7 @@ services:
     plan: starter
     dockerfilePath: ./Dockerfile
     autoDeploy: true
-    startCommand: java -jar /app/jivitHealcare-0.0.1-SNAPSHOT.jar --server.port=8080
+    startCommand: java -jar /app/jivitHealcare-0.0.1-SNAPSHOT.jar --server.port=$PORT
     envVars:
       - key: SPRING_DATASOURCE_URL
         value: jdbc:mysql://mysql-db:3306/abc
@@ -49,4 +49,5 @@ services:
         value: update
       - key: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
         value: org.hibernate.dialect.MySQL8Dialect
+    healthCheckPath: /
 
