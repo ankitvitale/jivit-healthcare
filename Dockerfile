@@ -1,5 +1,5 @@
 # Stage 1: Build the application using Maven
-FROM maven:3.8.6-openjdk-17 AS build
+FROM  maven: 3.9.6-amazoncorretto-17-a12023 AST build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -23,7 +23,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Create the final image
-FROM openjdk:17-jdk-alpine
+FROM  openjdk:24-slim-bullseye
 
 # Set working directory for the final image
 WORKDIR /app
