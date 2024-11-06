@@ -37,7 +37,7 @@ services:
     plan: starter
     dockerfilePath: ./Dockerfile
     autoDeploy: true
-    startCommand: java -jar /app/jivitHealcare-0.0.1-SNAPSHOT.jar --server.port=$PORT
+    startCommand: java -jar /app/jivitHealcare-0.0.1-SNAPSHOT.jar --server.port=8080
     envVars:
       - key: SPRING_DATASOURCE_URL
         value: jdbc:mysql://mysql-db:3306/abc
