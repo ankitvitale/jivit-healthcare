@@ -1,6 +1,6 @@
 
 # Stage 1: Build the application using Maven
-FROM maven:3.8.6
+FROM maven
 WORKDIR /app
 
 # Install curl to check network connectivity if necessary
