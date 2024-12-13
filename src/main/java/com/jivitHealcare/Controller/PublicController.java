@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PublicController {
     private static final Logger logger = LoggerFactory.getLogger(PublicController.class);
 
-    @RequestMapping("/{path:^(?!api).*$}")
+    @RequestMapping("/{path:^(?!api|index\\.html|static|js|css|img|favicon\\.ico).*}")
     public String forwardFrontendRoutes() {
         logger.info("Forwarding frontend route to index.html");
         return "forward:/index.html";
