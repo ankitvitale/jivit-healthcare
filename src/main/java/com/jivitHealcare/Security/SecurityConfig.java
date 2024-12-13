@@ -3,7 +3,6 @@ package com.jivitHealcare.Security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,24 +12,22 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.*;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_URLS = {
-         "/api/registerAmin",
-            "/api/auth/login",
-            "/api/send-otp",
-            "/api/validate-otp",
-            "/api/AllhospitalsList",
-            "/api/appointment"
-
-    };
+    private static final String[] PUBLIC_URLS = Arrays.stream(new String[]{
+            "/registerAmin",
+            "/auth/login",
+            "/send-otp",
+            "/validate-otp",
+            "/AllhospitalsList",
+            "/appointment"
+    }).map(url -> "/api" + url).toArray(String[]::new);
 
 
     @Autowired
@@ -59,8 +56,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF
-               	.cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS with custom configuration
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS with custom configuration
                 .authorizeRequests(auth -> auth
+                        .requestMatchers("/", "/index.html", "/static/**", "/js/**", "/css/**", "/img/**").permitAll()
                         .requestMatchers(PUBLIC_URLS).permitAll() // Allow public access to these URLs
                         .requestMatchers("/api/*").authenticated() // Require authentication for this endpoint
                         .anyRequest().permitAll() // All other requests require authentication
@@ -77,7 +75,7 @@ public class SecurityConfig {
         return http.build(); // Return the 
     }
 
-public CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
         configuration.setAllowedOrigins(Arrays.asList("http://82.112.237.134"));  // Allow specific origins or use "*"
