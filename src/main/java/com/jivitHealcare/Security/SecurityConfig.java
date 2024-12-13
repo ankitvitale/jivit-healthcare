@@ -23,12 +23,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_URLS = {
-         "/registerAmin",
-            "/auth/login",
-            "/send-otp",
-            "/validate-otp",
-            "/AllhospitalsList",
-            "/appointment"
+         "/api/registerAmin",
+            "/api/auth/login",
+            "/api/send-otp",
+            "/api/validate-otp",
+            "/api/AllhospitalsList",
+            "/api/appointment"
 
     };
 
@@ -61,9 +61,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF
                	.cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS with custom configuration
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/test").authenticated() // Require authentication for this endpoint
                         .requestMatchers(PUBLIC_URLS).permitAll() // Allow public access to these URLs
-                        .anyRequest().authenticated() // All other requests require authentication
+                        .requestMatchers("/api/*").authenticated() // Require authentication for this endpoint
+                        .anyRequest().permitAll() // All other requests require authentication
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(point) // Set the authentication entry point
