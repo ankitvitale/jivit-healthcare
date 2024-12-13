@@ -163,7 +163,12 @@ public class HospitalController {
     //    @RequestParam Long hospitalId)
     {
 
+
         try {
+
+            Long maxId = cleamRequestDao.findMaxId();
+            Long nextId = (maxId == null) ? 1 : maxId + 1;
+            String authorizationNo = "JHMS" + String.format("%05d", nextId);
             // Upload files to DigitalOcean Spaces (or any other storage)
             String aadharCard = uploadFileToSpace(aadharCardFile);
             String jivatHealthCard = uploadFileToSpace(jivatHealthCardFile);
@@ -182,6 +187,7 @@ public class HospitalController {
 
             // Create a new CleamRequest object and set the parameters
             CleamRequest cleamRequest = new CleamRequest();
+            cleamRequest.setAuthorizationNo(authorizationNo);
             cleamRequest.setEmployeeName(employeeName);
             cleamRequest.setPatientName(patientName);
             cleamRequest.setHealthCardNo(healthCardNo);

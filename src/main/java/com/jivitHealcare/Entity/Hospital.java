@@ -72,6 +72,10 @@ public class Hospital {
     private String otp;
     private LocalDateTime expirationTime;
 
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLE", joinColumns = {
             @JoinColumn(name = "USER_ID", referencedColumnName = "email_id")  // Updated column name
@@ -249,6 +253,14 @@ public class Hospital {
 
     public void setExpirationTime(LocalDateTime expirationTime) {
         this.expirationTime = expirationTime;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public Set<com.jivitHealcare.Entity.Role> getRole() {

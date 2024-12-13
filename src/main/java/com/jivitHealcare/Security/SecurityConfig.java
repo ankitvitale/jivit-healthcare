@@ -14,6 +14,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -76,13 +77,14 @@ public class SecurityConfig {
 
         return http.build(); // Return the built SecurityFilterChain
     }
-    @Bean
+
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));  // Allow specific origins or use "*"
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("http://82.112.237.134"));  // Allow specific origins or use "*"
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allowed HTTP methods
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));  // Allowed headers
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));  // Expose headers to the client
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "x-auth-token", "Accept"));  // Allowed headers
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "x-auth-token"));  // Expose headers to the client
         configuration.setAllowCredentials(true);  // Allow credentials (cookies, authorization headers, etc.)
         configuration.setMaxAge(3600L);  // Cache preflight response for 1 hour
 

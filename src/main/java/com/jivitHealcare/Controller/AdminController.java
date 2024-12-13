@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+    import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class AdminController {
         adminService.initRoleAndUser();
     }
 
-        @PostMapping({"/registerAmin"})
+    @PostMapping({"/registerAmin"})
         public AdminRegister registerNewUser(@RequestBody AdminRegister adminRegister) {
         return adminService.registerNewAdmin(adminRegister);
     }
@@ -89,7 +90,16 @@ public class AdminController {
         }
     }
 
-    // PUT endpoint to update a hospital
+    @DeleteMapping("/deleteHospital/{id}")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<String> deleteHospitalbyadmin(@PathVariable Long id) {
+        adminService.deleteHospitalbyadmin(id);
+        return ResponseEntity.ok("Hospital deleted successfully");
+    }
+
+
+
+        // PUT endpoint to update a hospital
     @PutMapping("/hospital/{id}")
     @PreAuthorize("hasRole('Admin')")
     public ResponseEntity<Hospital> updateHospital(@PathVariable Long id, @RequestBody Hospital hospital) {
@@ -131,7 +141,7 @@ public ResponseEntity<HospitalPayment> addHospitalPayment(@RequestBody HospitalP
         String pdfFilePath = pdfDirectory + "\\" + pdfFileName;
 
         // Ensure the directory exists
-        File dir = new File(pdfDirectory);
+        File dir = ResourceUtils.getFile("hospitalPaymentDetails.pdf");
         if (!dir.exists()) {
             boolean dirsCreated = dir.mkdirs();
             if (!dirsCreated) {
@@ -163,7 +173,7 @@ public ResponseEntity<HospitalPayment> addHospitalPayment(@RequestBody HospitalP
 
     public void generatePaymentDetailsPDF(HospitalPayment hospitalPayment, String pdfFilePath) throws DocumentException, IOException {
         // Ensure the directory exists
-        File pdfDirectory = new File("E:\\jivitPDFDownload");
+        File pdfDirectory = ResourceUtils.getFile("hospitalPaymentDetails.pdf");
         if (!pdfDirectory.exists()) {
             pdfDirectory.mkdirs();  // Create the directory if it doesn't exist
         }
@@ -249,6 +259,13 @@ public ResponseEntity<HospitalPayment> addHospitalPayment(@RequestBody HospitalP
     public ResponseEntity<AddBenificiary> addBenificiary(@RequestBody AddBenificiary addBenificiary) {
         AddBenificiary savedEmployee = adminService.addBenificiary(addBenificiary);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/deleteBeneficiary/{id}")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<String> deleteBeneficiary(@PathVariable Long id) {
+        adminService.deleteBeneficiary(id);
+        return ResponseEntity.ok("Beneficiary with ID " + id + " and its dependents were successfully deleted.");
     }
     @GetMapping("/benificiaries")
     @PreAuthorize("hasRole('Admin')")

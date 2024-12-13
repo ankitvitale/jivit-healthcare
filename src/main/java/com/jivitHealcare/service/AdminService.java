@@ -5,6 +5,7 @@ import com.jivitHealcare.Entity.*;
 import com.jivitHealcare.Repo.*;
 //import org.apache.logging.log4j.Logger;
 //import org.slf4j.LoggerFactory;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,6 @@ import java.util.stream.Collectors;
 @Service
 public class AdminService {
 
-
-  //  private static final Logger logger = (Logger) LoggerFactory.getLogger(AdminService.class);
-
     @Autowired
     private RoleDao roleDao;
     @Autowired
@@ -35,14 +33,12 @@ public class AdminService {
     @Autowired
     private BenificiaeyDao benificiaeyDao;
     @Autowired
-   private BenificiaryCardDependentsDao benificiaryCardDependentsDao;
+    private BenificiaryCardDependentsDao benificiaryCardDependentsDao;
 
     @Autowired
-
     private OtpService otpService;
 
     public void initRoleAndUser() {
-
 
         // Create roles
         if (!roleDao.existsById("Admin")) {
@@ -77,18 +73,13 @@ public class AdminService {
     public Hospital addHospital(Hospital hospital) {
      //   logger.info("Starting addHospital for hospital name: {}", hospital.getEmail());
 
-
-
         Role adminRole = roleDao.findById("Hospital").orElseThrow(() -> new RuntimeException("Role not found"));
         // Set the role to the hospital
         Set<Role> roles = new HashSet<>();
         roles.add(adminRole);
         hospital.setRole(roles); // Set the fetched role
-
         Hospital savedHospital =  hospitalDao.save(hospital);
-
         otpService.sendHospitalAddedEmail(hospital);
-
         return savedHospital;
     }
 
@@ -131,10 +122,8 @@ public class AdminService {
         // Generate the card number
         String cardNo = "JHMS" + newId + Year.now().getValue();
         addBenificiary.setCardNo(cardNo);
-
         // Save the beneficiary object and retrieve the saved instance
         AddBenificiary savedBenificiary = benificiaeyDao.save(addBenificiary);
-
         // Set the relationship in the dependent objects
         for (BenificiaryCardDependents bcd : addBenificiary.getBenificiaryCardDependents()) {
             bcd.setAddBenificiary(savedBenificiary);
@@ -146,10 +135,6 @@ public class AdminService {
         // Return the saved beneficiary object
         return savedBenificiary;
     }
-
-
-
-    //   return benificiaeyDao.save(addBenificiary);
 
 
     public Hospital findByEmail(String email) {
@@ -185,10 +170,7 @@ public class AdminService {
         existingBenificiary.setDesignation(updatedBenificiary.getDesignation());
         existingBenificiary.setCardNo(updatedBenificiary.getCardNo());
 
-        // Get current dependents
         List<BenificiaryCardDependents> currentDependents = existingBenificiary.getBenificiaryCardDependents();
-
-        // Remove existing dependents if necessary to avoid duplicates
         currentDependents.clear();
 
         // Update or add new dependents
@@ -203,23 +185,46 @@ public class AdminService {
                 existingDependent.setAge(updatedDependent.getAge());
                 existingDependent.setRelation(updatedDependent.getRelation());
 
-                // Add updated dependent to the existing beneficiary
                 benificiaryCardDependentsDao.save(existingDependent);
-                //existingBenificiary.getBenificiaryCardDependents().add(existingDependent);
+
             } else {
-                // If no ID, it's a new dependent, so create and add it
                 updatedDependent.setAddBenificiary(existingBenificiary); // Link it to the beneficiary
                 existingBenificiary.getBenificiaryCardDependents().add(updatedDependent);
             }
         }
 
-        // Save the updated beneficiary (with dependents)
         return benificiaeyDao.save(existingBenificiary);
     }
 
-
-
     public List<Hospital> AllhospitalsList() {
-        return hospitalDao.findAll();
+        return hospitalDao.findAllActiveHospitals();
     }
+
+    public void deleteBeneficiary(Long id) {
+        // Check if the beneficiary exists
+        AddBenificiary beneficiary = benificiaeyDao.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Beneficiary not found with ID: " + id));
+
+        // Delete associated dependents
+        benificiaryCardDependentsDao.deleteAll(beneficiary.getBenificiaryCardDependents());
+
+        // Delete the beneficiary
+        benificiaeyDao.delete(beneficiary);
+    }
+
+
+    public void deleteHospitalbyadmin(Long id) {
+        Hospital hospital = hospitalDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Hospital not found with ID: " + id));
+
+        // Clear the roles for this hospital
+        hospital.getRole().clear();
+
+        // Mark the hospital as deleted
+        hospital.setDeleted(true);
+
+        // Save the changes
+        hospitalDao.save(hospital);
+    }
+
 }
