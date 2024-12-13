@@ -8,7 +8,7 @@ import com.jivitHealcare.Repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import jakarta.persistence.EntityNotFoundException;
 import java.time.Year;
 import java.util.HashSet;
 import java.util.List;
@@ -217,9 +217,28 @@ public class AdminService {
         return benificiaeyDao.save(existingBenificiary);
     }
 
-
+      public void deleteBeneficiary(Long id) {
+        AddBenificiary beneficiary = benificiaeyDao.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Beneficiary not found with ID: " + id));
+        benificiaryCardDependentsDao.deleteAll(beneficiary.getBenificiaryCardDependents());
+        benificiaeyDao.delete(beneficiary);
+    }
 
     public List<Hospital> AllhospitalsList() {
-        return hospitalDao.findAll();
+        return hospitalDao.findAllActiveHospitals();
+    }
+
+          public void deleteHospitalbyadmin(Long id) {
+        Hospital hospital = hospitalDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Hospital not found with ID: " + id));
+
+        // Clear the roles for this hospital
+        hospital.getRole().clear();
+
+        // Mark the hospital as deleted
+        hospital.setDeleted(true);
+
+        // Save the changes
+        hospitalDao.save(hospital);
     }
 }

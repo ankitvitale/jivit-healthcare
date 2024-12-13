@@ -1,4 +1,4 @@
-package com.jivitHealcare.Configuration;
+/*package com.jivitHealcare.Configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +15,11 @@ public class CorsGlobalConfiguration {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));  // Allow specific origins
+        configuration.setAllowedOrigins(Arrays.asList("http://82.112.237.134"));  // Allow specific origins
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // Allowed methods
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));  // Allowed headers
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));  // Expose headers to the client
+        configuration.setAllowedHeaders(Arrays.asList("*"));  // Allowed headers
+	configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+	configuration.setExposedHeaders(Arrays.asList("x-auth-token"));
         configuration.setAllowCredentials(true);  // Allow credentials (cookies, authorization headers, etc.)
         configuration.setMaxAge(3600L);  // Cache preflight response for 1 hour
 
@@ -27,3 +28,4 @@ public class CorsGlobalConfiguration {
         return new CorsFilter(source);
     }
 }
+*/

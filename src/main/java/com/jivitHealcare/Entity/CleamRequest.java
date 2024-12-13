@@ -11,7 +11,7 @@ public class CleamRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private String authorizationNo;
     private String employeeName;
     private String patientName;
     private String healthCardNo;
@@ -66,7 +66,13 @@ public class CleamRequest {
     public void setId(Long id) {
         this.id = id;
     }
+       public String getAuthorizationNo() {
+        return authorizationNo;
+    }
 
+    public void setAuthorizationNo(String authorizationNo) {
+        this.authorizationNo = authorizationNo;
+    }
     public String getEmployeeName() {
         return employeeName;
     }

@@ -271,6 +271,8 @@ public class OtpService {
                 "Your hospital has been successfully empanell in Jivit Healthcare & Medical Services.Pvt.Ltd\n" +
                 "Your JivitHealthCare login ID is: " + hospital.getEmail() + "\n" +
                 "And your password is the OTP sent to your email: " + hospital.getEmail() + "\n\n" +
+                "You can log in to your account using the following link:\n" +
+                "http://jivithealthcare.in/hospitallogin\n\n" +
                 "Thank you once again for choosing Jivit Healthcare! We are here for your health and well-being.\n" +
                 "If you have any questions, feel free to reach out!\n\n" +
                 "\n\nBest Regards,\nThe Jivit Healthcare Team";

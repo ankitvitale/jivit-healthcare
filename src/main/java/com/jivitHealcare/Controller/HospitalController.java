@@ -164,6 +164,10 @@ public class HospitalController {
     {
 
         try {
+              
+            Long maxId = cleamRequestDao.findMaxId();
+            Long nextId = (maxId == null) ? 1 : maxId + 1;
+            String authorizationNo = "JHMS" + String.format("%05d", nextId);
             // Upload files to DigitalOcean Spaces (or any other storage)
             String aadharCard = uploadFileToSpace(aadharCardFile);
             String jivatHealthCard = uploadFileToSpace(jivatHealthCardFile);
@@ -181,34 +185,36 @@ public class HospitalController {
 //int totalExpenseHospitalization=(expectedLengthOfStay*perDayRoomRent)+expectedCostInvestigation+medicinesConsumablesCost+doctorFeeSurgeonAss+surgeonAnesthetistVisitCharges;
 
             // Create a new CleamRequest object and set the parameters
-            CleamRequest cleamRequest = new CleamRequest();
+            CleamRequest cleamRequest = new CleamRequest();         
+            cleamRequest.setAuthorizationNo(authorizationNo);
             cleamRequest.setEmployeeName(employeeName);
             cleamRequest.setPatientName(patientName);
-            cleamRequest.setHealthCardNo(healthCardNo);
+            cleamRequest.setHealthCardNo(healthCardNo); 
             cleamRequest.setDepartmentName(departmentName);
             cleamRequest.setMobileNo(mobileNo);
             cleamRequest.setRelationWithEmployee(relationWithEmployee);
-            cleamRequest.setAddress(address);
+            cleamRequest.setAddress(address); 
             cleamRequest.setChiefComplaints(chiefComplaints);
             cleamRequest.setProvisionalDiagnosis(provisionalDiagnosis);
-            cleamRequest.setPlanOfTreatmentMedical(planOfTreatmentMedical);
+            cleamRequest.setPlanOfTreatmentMedical(planOfTreatmentMedical); 
             cleamRequest.setPlanOfTreatmentSurgical(planOfTreatmentSurgical);
             cleamRequest.setGrAilment(grAilment);
-            cleamRequest.setGrAilmentCode(grAilmentCode);
-            cleamRequest.setDateOfAdmission(dateOfAdmission);
-            cleamRequest.setExpectedLengthOfStay(expectedLengthOfStay);
-            cleamRequest.setClassOfAccommodation(classOfAccommodation);
+            cleamRequest.setGrAilmentCode(grAilmentCode); 
+            cleamRequest.setDateOfAdmission(dateOfAdmission); 
+            cleamRequest.setExpectedLengthOfStay(expectedLengthOfStay); 
+            cleamRequest.setClassOfAccommodation(classOfAccommodation); 
             cleamRequest.setPerDayRoomRent(perDayRoomRent);
             cleamRequest.setExpectedCostInvestigation(expectedCostInvestigation);
-            cleamRequest.setMedicinesConsumablesCost(medicinesConsumablesCost);
-            cleamRequest.setDoctorFeeSurgeonAss(doctorFeeSurgeonAss);
-            cleamRequest.setSurgeonAnesthetistVisitCharges(surgeonAnesthetistVisitCharges);
+            cleamRequest.setMedicinesConsumablesCost(medicinesConsumablesCost); 
+            cleamRequest.setDoctorFeeSurgeonAss(doctorFeeSurgeonAss); 
+            cleamRequest.setSurgeonAnesthetistVisitCharges(surgeonAnesthetistVisitCharges); 
             cleamRequest.setTotalExpenseHospitalization(totalExpenseHospitalization);
             cleamRequest.setNameOfDoctor(nameOfDoctor);
-            cleamRequest.setDoctorRegistrationNumber(doctorRegistrationNumber);
-            cleamRequest.setAlcoholAbuse(alcoholAbuse);
+            cleamRequest.setDoctorRegistrationNumber(doctorRegistrationNumber); 
+            cleamRequest.setAlcoholAbuse(alcoholAbuse); 
             cleamRequest.setMlcFirCopy(mlcFirCopy);
             cleamRequest.setHospital(hospital1);
+
 
             // Set the file URLs after upload
             cleamRequest.setAadharCard(aadharCard);

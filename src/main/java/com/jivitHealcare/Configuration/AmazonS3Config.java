@@ -17,10 +17,10 @@ public class AmazonS3Config {
     public S3Client s3Client() {
         return S3Client.builder()
                 .region(Region.US_EAST_1) // This is required but will be ignored by the custom endpoint
-                .endpointOverride(URI.create("https://blr1.digitaloceanspaces.com"))
+                .endpointOverride(URI.create("https://timtims.blr1.digitaloceanspaces.com"))
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(
-                        "DO00WXBHC4LZ2BXCWUWZ",
-                        "NsGo7BivJXQbp6Yfh8fNpzUFfaXAEoAPo7FqqXZoNxY")))
+                        "DO00NX7NNTGE8JE34BXK",
+                        "ZYOX2vb6ZZ3sNxRsaImt+xhjMa6afdu0lqroPLWVShw")))
                 .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
                 .build();
     }

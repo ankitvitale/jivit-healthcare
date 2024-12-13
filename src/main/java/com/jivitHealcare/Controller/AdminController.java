@@ -10,6 +10,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,6 +90,14 @@ public class AdminController {
         }
     }
 
+
+
+    @DeleteMapping("/deleteHospital/{id}")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<String> deleteHospitalbyadmin(@PathVariable Long id) {
+        adminService.deleteHospitalbyadmin(id);
+        return ResponseEntity.ok("Hospital deleted successfully");
+    }
     // PUT endpoint to update a hospital
     @PutMapping("/hospital/{id}")
     @PreAuthorize("hasRole('Admin')")
@@ -131,7 +140,7 @@ public ResponseEntity<HospitalPayment> addHospitalPayment(@RequestBody HospitalP
         String pdfFilePath = pdfDirectory + "\\" + pdfFileName;
 
         // Ensure the directory exists
-        File dir = new File(pdfDirectory);
+        File dir = ResourceUtils.getFile("hospitalPaymentDetails.pdf");
         if (!dir.exists()) {
             boolean dirsCreated = dir.mkdirs();
             if (!dirsCreated) {
@@ -163,7 +172,7 @@ public ResponseEntity<HospitalPayment> addHospitalPayment(@RequestBody HospitalP
 
     public void generatePaymentDetailsPDF(HospitalPayment hospitalPayment, String pdfFilePath) throws DocumentException, IOException {
         // Ensure the directory exists
-        File pdfDirectory = new File("E:\\jivitPDFDownload");
+        File pdfDirectory = ResourceUtils.getFile("hospitalPaymentDetails.pdf");
         if (!pdfDirectory.exists()) {
             pdfDirectory.mkdirs();  // Create the directory if it doesn't exist
         }
@@ -256,7 +265,12 @@ public ResponseEntity<HospitalPayment> addHospitalPayment(@RequestBody HospitalP
         List<AddBenificiary> benificiaries = adminService.getAllBenificiaries();
         return new ResponseEntity<>(benificiaries, HttpStatus.OK);
     }
-
+  @DeleteMapping("/deleteBeneficiary/{id}")
+    @PreAuthorize("hasRole('Admin')")
+    public ResponseEntity<String> deleteBeneficiary(@PathVariable Long id) {
+        adminService.deleteBeneficiary(id);
+        return ResponseEntity.ok("Beneficiary with ID " + id + " and its dependents were successfully deleted.");
+    }
     // New method to get a beneficiary by ID
     @GetMapping("/benificiaries/{id}")
     @PreAuthorize("hasRole('Admin')")
